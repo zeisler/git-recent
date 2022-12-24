@@ -29,21 +29,20 @@ type RecentBranch struct {
 //}
 
 func PopulateBranches() {
-	cmd := exec.Command(`git for-each-ref --no-merged=master --count=50 --sort=-committerdate refs/heads/ --format="%(refname:short)"`)
+	cmd := exec.Command("git", "for-each-ref", "--no-merged=main", "--count=50", "--sort=-committerdate", "refs/heads/", `--format="%(refname:short)"`)
 	output := strings.Builder{}
 	cmd.Stdout = &output
 	if err := cmd.Run(); err != nil {
-		if !strings.Contains(err.Error(), " no such file or directory") {
-			log.Fatal(err)
-		}
+		//if !strings.Contains(err.Error(), " no such file or directory") {
+		log.Fatal(err)
+		//}
 	}
 
-	BranchCache = strings.Split(output.String(), "\n")
+	BranchCache = strings.Split(strings.Replace(output.String(), `"`, "", -1), "\n")
 
 	if len(BranchCache) == 0 {
 		BranchCache = append(BranchCache, "taco", "chicken")
 	}
-
 }
 
 func FilterBranches(arg string) []string {
@@ -84,9 +83,17 @@ func main() {
 	// completion and -uncomplete to uninstall it.
 
 	// if the completion did not do anything, we can run our program logic here.
+
 	PopulateBranches()
 	if cmp.Run() {
-		fmt.Println("taco", "chicken")
+		fmt.Println(strings.Join(BranchCache, " "))
 		os.Exit(1)
+	} else {
+		cmd := exec.Command("git", "checkout", os.Args[1])
+		b, err := cmd.CombinedOutput()
+		fmt.Println(string(b))
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 }
