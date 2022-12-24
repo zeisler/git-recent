@@ -19,9 +19,7 @@ func PopulateBranches() {
 	output := strings.Builder{}
 	cmd.Stdout = &output
 	if err := cmd.Run(); err != nil {
-		//if !strings.Contains(err.Error(), " no such file or directory") {
 		log.Fatal(err)
-		//}
 	}
 
 	BranchCache = strings.Split(strings.Replace(output.String(), `"`, "", -1), "\n")
