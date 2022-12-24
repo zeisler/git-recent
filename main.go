@@ -75,15 +75,6 @@ func main() {
 		},
 	)
 
-	// AddFlags adds the completion flags to the program flags,
-	// in case of using non-default flag set, it is possible to pass
-	// it as an argument.
-	// it is possible to set custom flags name
-	// so when one will type 'self -h', he will see '-complete' to install the
-	// completion and -uncomplete to uninstall it.
-
-	// if the completion did not do anything, we can run our program logic here.
-
 	PopulateBranches()
 	if cmp.Run() {
 		fmt.Println(strings.Join(BranchCache, " "))
