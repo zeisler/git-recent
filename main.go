@@ -1,5 +1,3 @@
-// Package self
-// a program that complete itself
 package main
 
 import (
