@@ -14,8 +14,24 @@ var BranchCache []string
 type RecentBranch struct {
 }
 
+func DefaultBranch() string {
+	cmd := exec.Command("git", "symbolic-ref", "refs/remotes/origin/HEAD")
+	output := strings.Builder{}
+	cmd.Stdout = &output
+	if err := cmd.Run(); err != nil {
+		log.Fatal(err)
+	}
+	names := strings.Split(output.String(), "/")
+
+	if len(names) <= 1 {
+		log.Fatal(fmt.Sprintf("unknown default branch: '%v'", names))
+	}
+
+	return names[len(names)-1]
+}
+
 func PopulateBranches() {
-	cmd := exec.Command("git", "for-each-ref", "--no-merged=main", "--count=50", "--sort=-committerdate", "refs/heads/", `--format="%(refname:short)"`)
+	cmd := exec.Command("git", "for-each-ref", fmt.Sprintf("--no-merged=%v", DefaultBranch()), "--count=20", "--sort=-committerdate", "refs/heads/", `--format="%(refname:short)"`)
 	output := strings.Builder{}
 	cmd.Stdout = &output
 	if err := cmd.Run(); err != nil {
