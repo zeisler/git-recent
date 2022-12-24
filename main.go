@@ -2,29 +2,17 @@ package main
 
 import (
 	"fmt"
+	"github.com/posener/complete"
 	"log"
 	"os"
 	"os/exec"
 	"strings"
-
-	"github.com/posener/complete"
 )
 
 var BranchCache []string
 
 type RecentBranch struct {
 }
-
-//
-//func Match(arg string) bool {
-//	for _, branch := range BranchCache {
-//		if branch == arg {
-//			return true
-//		}
-//	}
-//
-//	return false
-//}
 
 func PopulateBranches() {
 	cmd := exec.Command("git", "for-each-ref", "--no-merged=main", "--count=50", "--sort=-committerdate", "refs/heads/", `--format="%(refname:short)"`)
@@ -78,11 +66,19 @@ func main() {
 		fmt.Println(strings.Join(BranchCache, " "))
 		os.Exit(1)
 	} else {
-		cmd := exec.Command("git", "checkout", os.Args[1])
-		b, err := cmd.CombinedOutput()
-		fmt.Println(string(b))
-		if err != nil {
-			log.Fatal(err)
+		var branch string
+		if len(os.Args) > 1 {
+			branch = os.Args[1]
+		} else if len(BranchCache) > 0 {
+			branch = BranchCache[0]
+		}
+		if branch != "" {
+			cmd := exec.Command("git", "checkout", branch)
+			b, err := cmd.CombinedOutput()
+			fmt.Println(string(b))
+			if err != nil {
+				log.Fatal(err)
+			}
 		}
 	}
 }
