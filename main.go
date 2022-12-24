@@ -21,7 +21,7 @@ func DefaultBranch() string {
 	if err := cmd.Run(); err != nil {
 		log.Fatal(err)
 	}
-	names := strings.Split(output.String(), "/")
+	names := strings.Split(strings.TrimSuffix(output.String(), "\n"), "/")
 
 	if len(names) <= 1 {
 		log.Fatal(fmt.Sprintf("unknown default branch: '%v'", names))
