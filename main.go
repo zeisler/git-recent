@@ -53,9 +53,11 @@ func (r RecentBranch) Predict(args complete.Args) []string {
 
 func main() {
 	cmp := complete.New(
-		"git-recent",
+		"git",
 		complete.Command{
-			Args: RecentBranch{},
+			Sub: map[string]complete.Command{
+				"recent": {Args: RecentBranch{}},
+			},
 		},
 	)
 
