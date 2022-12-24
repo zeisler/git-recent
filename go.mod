@@ -1,4 +1,4 @@
-module git-switch
+module git-recent
 
 go 1.19
 
