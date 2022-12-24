@@ -1,4 +1,4 @@
-module git-recent
+module github.com/zeisler/git-recent
 
 go 1.19
 
